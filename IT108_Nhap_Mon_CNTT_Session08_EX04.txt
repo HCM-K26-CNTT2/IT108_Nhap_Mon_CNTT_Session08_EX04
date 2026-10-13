@@ -1,0 +1,22 @@
+﻿Bài 4 : Xây dựng quy trình lưu nhật ký hệ thống 
+Phần 1: So sánh
+* Ghi đè: Tạo mới tệp nếu chưa có, hoặc xóa toàn bộ nội dung cũ để ghi dữ liệu mới vào (tương đương Out-File).
+* Ghi nối tiếp: Tạo mới tệp nếu chưa có, hoặc ghi thêm dữ liệu mới vào cuối tệp hiện tại (tương đương Out-File -Append).
+Rủi ro mất dữ liệu, Ngữ cảnh sử dụng thực tế, Encoding file đầu ra
+
+
+* Ghi đè:
+* Rất cao: Chỉ cần chạy lại lệnh hoặc chạy nhầm vào tệp đang lưu trữ là toàn bộ dữ liệu trước đó sẽ bị xóa sạch.
+* Phù hợp khi muốn tạo mới báo cáo độc lập
+* Mặc định sử dụng UTF-16 LE (trên Windows PowerShell 5.1). Dễ gây lỗi hiển thị ký tự  khi xem bằng các công cụ chỉ hỗ trợ UTF-8/ANSI.
+
+
+* Ghi nối tiếp:
+* Rất thấp: Bảo toàn nguyên vẹn dữ liệu cũ, chỉ chèn thêm dòng mới vào cuối tệp
+* Phù hợp cho việc theo dõi liên tục 24/7 để dồn lỗi phát sinh theo thời gian thực mà không làm mất lịch sử trước đó.
+* Mặc định là UTF-16 LE. Nếu nối tiếp vào một file sẵn có khác bảng mã, có thể dẫn tới xung đột encoding giữa các phần nội dung.
+Phần 2: Lựa chọn
+Chọn cách ghi nối tiếp:
+Get-Content server.log | Select-String "ERROR" | Out-File daily_report.txt -Append -Encoding utf8
+Lập luận lý do:
+* Giúp giữ toàn bộ dòng log lỗi đã thu thập từ trước đó, tránh việc lần quét sau xóa mất kết quả của lần quét trước.
